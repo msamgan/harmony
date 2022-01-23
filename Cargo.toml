@@ -1,10 +1,26 @@
 [package]
+description = "a synchronization engine to sync local directories to cloud over ssh, written in rust"
 edition = "2021"
+license = "MIT"
 name = "sync_engine"
 version = "0.1.0"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+cargo-deb = "1.35.0"
 dircpy = "0.3.8"
 notify = "4.0.0"
+
+[package.metadata.deb]
+assets = [
+  ["target/release/cargo-deb", "usr/bin/", "755"],
+  ["README.md", "usr/share/doc/cargo-deb/README", "644"],
+]
+copyright = "2022, Mohammed Samgan Khan <mohdsamgankhan@gmail.com>"
+depends = "$auto"
+extended-description = "a synchronization engine to sync local directories to cloud over ssh, written in rust"
+license-file = ["LICENSE", "4"]
+maintainer = "msamgan <mohdsamgankhan@gmail.com>"
+priority = "optional"
+section = "utility"
