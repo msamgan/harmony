@@ -7,3 +7,4 @@ version = "0.1.0"
 
 [dependencies]
 notify = "4.0.0"
+fs_extra = "1.2.0"

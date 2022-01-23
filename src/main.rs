@@ -1,26 +1,32 @@
 extern crate notify;
 
-use notify::{watcher, RecursiveMode, Watcher};
+use notify::{raw_watcher, RawEvent, RecursiveMode, Watcher};
 use std::sync::mpsc::channel;
-use std::time::Duration;
 
 fn main() {
     // Create a channel to receive the events.
     let (tx, rx) = channel();
 
-    // Create a watcher object, delivering debounced events.
+    // Create a watcher object, delivering raw events.
     // The notification back-end is selected based on the platform.
-    let mut watcher = watcher(tx, Duration::from_secs(10)).unwrap();
+    let mut watcher = raw_watcher(tx).unwrap();
 
     // Add a path to be watched. All files and directories at that path and
     // below will be monitored for changes.
-    watcher
-        .watch("/home/msamgan/Documents", RecursiveMode::Recursive)
-        .unwrap();
+    let base_dir: String = String::from("/home/msamgan/Documents");
+
+    watcher.watch(base_dir, RecursiveMode::Recursive).unwrap();
 
     loop {
         match rx.recv() {
-            Ok(event) => println!("{:?}", event),
+            Ok(RawEvent {
+                path: Some(path),
+                op: Ok(op),
+                cookie,
+            }) => {
+                println!("{:?} {:?} ({:?})", op, path, cookie)
+            }
+            Ok(event) => println!("broken event: {:?}", event),
             Err(e) => println!("watch error: {:?}", e),
         }
     }
